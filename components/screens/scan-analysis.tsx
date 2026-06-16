@@ -149,7 +149,7 @@ export function ScanAnalysis() {
     onClick={() => fileInputRef.current?.click()}
   >
     <ImagePlus className="size-5" />
-    Upload Photos
+    Add Project Photos
   </Button>
 </div>
 
