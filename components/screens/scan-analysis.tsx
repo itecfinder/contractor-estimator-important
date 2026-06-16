@@ -23,6 +23,9 @@ const scanImages: Record<ScanMode, string> = {
   roof: "/images/scan-roof.png",
   walls: "/images/scan-walls.png",
   floors: "/images/scan-floor.png",
+  bathroom: "/images/scan-bathroom.png",
+  kitchen: "/images/scan-kitchen.png",
+  lights: "/images/scan-lights-lamps.png",
   generic: "/images/scan-walls.png",
 }
 
