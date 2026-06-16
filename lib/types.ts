@@ -11,7 +11,14 @@ export type ProjectTypeKey =
   | "driveway"
   | "roofing"
 
-export type ScanMode = "roof" | "walls" | "floors" | "generic"
+export type ScanMode =
+  | "roof"
+  | "walls"
+  | "floors"
+  | "bathroom"
+  | "kitchen"
+  | "lights"
+  | "generic" 
 
 export type Customer = {
   name: string
