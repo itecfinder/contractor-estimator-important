@@ -102,6 +102,13 @@ const handleUpload = (
 
   return (
     <div>
+      <input
+  ref={fileInputRef}
+  type="file"
+  accept="image/*"
+  onChange={handleUpload}
+  className="hidden"
+/>
       <ScreenHeader title={t("scanProject")} step={{ current: 2, total: 4 }} back="capture" />
 
       <div className="space-y-5 px-4 pt-4">
@@ -111,7 +118,7 @@ const handleUpload = (
             <Camera className="size-5" />
             {t("takePhoto")}
           </Button>
-          <Button variant="outline" className="h-12" onClick={() => addImage("generic")}>
+          <Button variant="outline" className="h-12" onClick={() => fileInputRef.current?.click()}>
             <ImagePlus className="size-5" />
             {t("uploadPhotos")}
           </Button>
