@@ -35,8 +35,26 @@ const severityCls: Record<string, string> = {
 export function ScanAnalysis() {
   const { t, current, updateCurrent, saveCurrent, go } = useApp()
   const [busy, setBusy] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   if (!current) return null
+const handleUpload = (
+  event: React.ChangeEvent<HTMLInputElement>
+) => {
+  const files = Array.from(event.target.files || [])
 
+  if (!files.length) return
+
+  updateCurrent({
+    images: [
+      ...current.images,
+      ...files.map((file) => ({
+        id: uid(),
+        url: URL.createObjectURL(file),
+        scanMode: "generic" as ScanMode,
+      })),
+    ],
+  })
+}
   const addImage = (scanMode: ScanMode) => {
     updateCurrent({
       images: [
@@ -77,7 +95,7 @@ export function ScanAnalysis() {
   return (
     <div>
       <ScreenHeader title={t("scanProject")} step={{ current: 2, total: 4 }} back="capture" />
-
+  <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handleUpload}className="hidden"  />
       <div className="space-y-5 px-4 pt-4">
         {/* Capture actions */}
         <div className="grid grid-cols-2 gap-2.5">
@@ -85,10 +103,9 @@ export function ScanAnalysis() {
             <Camera className="size-5" />
             {t("takePhoto")}
           </Button>
-          <Button variant="outline" className="h-12" onClick={() => addImage("generic")}>
-            <ImagePlus className="size-5" />
-            {t("uploadPhotos")}
-          </Button>
+         <Button variant="outline" className="h-12" onClick={() => fileInputRef.current?.click()}>
+         <ImagePlus className="size-5" /> {t("uploadPhotos")}
+        </Button>
         </div>
         <div className="grid grid-cols-3 gap-2.5">
           {captureButtons.map(({ mode, label, icon: Icon }) => (
