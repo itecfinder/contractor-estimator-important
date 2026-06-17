@@ -96,7 +96,26 @@ return (
   
     <div>
       <ScreenHeader title={t("scanProject")} step={{ current: 2, total: 4 }} back="capture" />
+<div className="space-y-5 px-4 pt-4">
 
+  <input
+    ref={fileInputRef}
+    type="file"
+    accept="image/*"
+    onChange={handleUpload}
+    className="hidden"
+  />
+
+  <div className="flex justify-center">
+    <Button
+      variant="outline"
+      className="h-12 w-full"
+      onClick={() => fileInputRef.current?.click()}
+    >
+      <ImagePlus className="size-5" />
+      Upload Project Photos
+    </Button>
+  </div>
       <div className="space-y-5 px-4 pt-4">
         {/* Capture actions */}
         <div className="grid grid-cols-2 gap-2.5">
