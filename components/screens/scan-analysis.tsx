@@ -70,12 +70,7 @@ const handleUpload = (
     saveCurrent()
     go("estimate")
   }
-
-  const captureButtons: { mode: ScanMode; label: string; icon: typeof Camera }[] = [
-    { mode: "roof", label: t("scanRoof"), icon: Ruler },
-    { mode: "walls", label: t("scanWalls"), icon: Ruler },
-    { mode: "floors", label: t("scanFloors"), icon: Ruler },
-  ]
+ 
 
   return (
     <div>
