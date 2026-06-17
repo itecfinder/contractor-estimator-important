@@ -1,17 +1,31 @@
+import OpenAI from "openai";
 import { NextResponse } from "next/server";
 
 export async function POST() {
-  return NextResponse.json({
-    surfaces: [
-      {
-        label: "Test Surface",
-        area: 100,
-        unit: "sq ft",
-        confidence: 0.95,
-      },
-    ],
-    damage: [],
-    scope: [],
-    followUps: [],
-  });
+  try {
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+
+    const response = await openai.responses.create({
+      model: "gpt-4.1-mini",
+      input: "test",
+    });
+
+    return NextResponse.json({
+      surfaces: [],
+      damage: [],
+      scope: [],
+      followUps: [],
+      debug: response.output_text,
+    });
+  } catch (error: any) {
+    return NextResponse.json({
+      surfaces: [],
+      damage: [],
+      scope: [],
+      followUps: [],
+      debug: error?.message || "unknown error",
+    });
+  }
 }
