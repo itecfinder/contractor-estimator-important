@@ -13,19 +13,31 @@ export async function POST() {
     });
 
     return NextResponse.json({
-      surfaces: [],
+      surfaces: [
+        {
+          label: response.output_text,
+          area: 1,
+          unit: "sq ft",
+          confidence: 1,
+        },
+      ],
       damage: [],
       scope: [],
       followUps: [],
-      debug: response.output_text,
     });
   } catch (error: any) {
     return NextResponse.json({
-      surfaces: [],
+      surfaces: [
+        {
+          label: error?.message || "unknown error",
+          area: 0,
+          unit: "",
+          confidence: 0,
+        },
+      ],
       damage: [],
       scope: [],
       followUps: [],
-      debug: error?.message || "unknown error",
     });
   }
 }
