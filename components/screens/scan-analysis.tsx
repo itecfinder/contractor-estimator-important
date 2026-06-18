@@ -286,32 +286,20 @@ back="capture"
 
   </div>
 )}
-    <Button
-      variant="outline"
-      onClick={() =>
-        setExtraCosts([
-          ...extraCosts,
-          { description: "", amount: "" },
-        ])
-      }
-    >
-      + Add Cost
-    </Button>
-  </div>
-</div>
-        )}
       </div>
-
-      {current.analysis && (
-        <StickyBar>
-          <Button onClick={buildEstimate} className="h-12 w-full text-base font-semibold">
-            {t("buildEstimate")}
-            <ArrowRight className="size-5" />
-          </Button>
-        </StickyBar>
-      )}
-    </div>
-  )
+     {current.analysis && (
+    <StickyBar>
+      <Button
+        onClick={buildEstimate}
+        className="h-12 w-full text-base font-semibold"
+      >
+        {t("buildEstimate")}
+        <ArrowRight className="size-5" />
+      </Button>
+    </StickyBar>
+  )}
+</>
+)
 }
 
 function ResultCard({
@@ -333,4 +321,3 @@ function ResultCard({
     </div>
   )
 }
-
