@@ -2,10 +2,12 @@ import OpenAI from "openai";
 import { NextResponse } from "next/server";
 
 export async function POST() {
-  try {
-    const openai = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY,
-    });
+  return NextResponse.json({
+    keyExists: !!process.env.OPENAI_API_KEY,
+    keyLength: process.env.OPENAI_API_KEY?.length || 0,
+    keyPrefix: process.env.OPENAI_API_KEY?.slice(0, 12),
+  });
+}
 
     const response = await openai.responses.create({
       model: "gpt-4.1-mini",
