@@ -83,6 +83,9 @@ const handleUpload = (
  
   return (
     <div>
+      <h1 style={{ color: "red", fontSize: "40px" }}>
+  TEST 999
+</h1>
       <ScreenHeader title={t("scanProject")} step={{ current: 2, total: 4 }} back="capture" />
       <div className="bg-red-500 text-white p-2">
   SCAN ANALYSIS TEST
