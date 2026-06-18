@@ -1,6 +1,5 @@
 import OpenAI from "openai";
 import { NextResponse } from "next/server";
-
 export async function POST() {
   return NextResponse.json({
     keyExists: !!process.env.OPENAI_API_KEY,
@@ -8,11 +7,6 @@ export async function POST() {
     keyPrefix: process.env.OPENAI_API_KEY?.slice(0, 12),
   });
 }
-
-    const response = await openai.responses.create({
-      model: "gpt-4.1-mini",
-      input: "test",
-    });
 
     return NextResponse.json({
       surfaces: [
