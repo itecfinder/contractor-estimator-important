@@ -98,7 +98,7 @@ export function Dashboard() {
         return
       }
 
-      if (result.access === "lead" || result.access === "free") {
+      if (result.access === "free" || result.access === "new") {
         const passKey = getPassKey(result.access)
 
         const passUsed = localStorage.getItem(passKey) === "true"
