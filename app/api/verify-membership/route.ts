@@ -26,8 +26,17 @@ export async function POST(req: NextRequest) {
         "X-Api-Key": process.env.BD_API_KEY!,
       },
     })
+console.log("BD STATUS:", bdResponse.status)
 
-    const bdUser = await bdResponse.json()
+const text = await bdResponse.text()
+
+console.log("BD RAW RESPONSE:", text)
+
+if (!bdResponse.ok) {
+  throw new Error(`BD Error ${bdResponse.status}: ${text}`)
+}
+
+const bdUser = JSON.parse(text)
 
     // MEMBER FOUND
     if (bdUser?.id) {
