@@ -58,19 +58,20 @@ export function Dashboard() {
     }
 
     try {
-      const response = await fetch("/api/verify-membership")",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            businessName,
-            phone,
-            email,
-          }),
-        }
-      )
+      const response = await fetch(
+  "/api/verify-membership",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      businessName,
+      phone,
+      email,
+    }),
+  }
+)
 
       const result = await response.json()
 
