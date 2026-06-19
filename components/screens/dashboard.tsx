@@ -32,6 +32,9 @@ const typeIcons: Record<ProjectTypeKey, LucideIcon> = {
   roofing: Triangle,
 }
 
+
+
+
 const order: ProjectTypeKey[] = [
   "kitchenBath",
   "homeRemodel",
@@ -43,12 +46,51 @@ const order: ProjectTypeKey[] = [
   "driveway",
   "roofing",
 ]
-
 export function Dashboard() {
   const { t, lang, startProject, projects, openProject, money } = useApp()
-const [businessName, setBusinessName] = useState("")
-const [phone, setPhone] = useState("")
-const [email, setEmail] = useState("")
+
+  const [businessName, setBusinessName] = useState("")
+  const [phone, setPhone] = useState("")
+  const [email, setEmail] = useState("")
+
+  const createProject = async (
+    projectType?: ProjectTypeKey
+  ) => {
+    if (!businessName || !phone || !email) {
+      alert("Please complete all fields")
+      return
+    }
+
+    try {
+      const response = await fetch(
+        "/api/check-access",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            businessName,
+            phone,
+            email,
+          }),
+        }
+      )
+
+      const result = await response.json()
+
+      if (!result.allowed) {
+        alert(result.message)
+        return
+      }
+
+      startProject(projectType ?? null)
+    } catch (error) {
+      console.error(error)
+      alert("Unable to verify account")
+    }
+  }
+  
   return (
     <div className="space-y-6 px-4 pt-5">
       {/* Hero */}
@@ -77,7 +119,7 @@ const [email, setEmail] = useState("")
   onChange={(e) => setEmail(e.target.value)}
   className="mt-2 border-white/30 bg-transparent text-white placeholder:text-white/60"
 />
-        <Button
+  <Button
   onClick={async () => {
     if (!businessName || !phone || !email) {
       alert("Please complete all fields")
@@ -89,12 +131,11 @@ const [email, setEmail] = useState("")
 
     startProject(null)
   }}
-          className="mt-4 h-12 w-full text-base font-semibold"
-        >
-          <Plus className="size-5" />
-          {t("newProject")}
-        </Button>
-      </div>
+  className="mt-4 h-12 w-full text-base font-semibold"
+>
+  <Plus className="size-5" />
+  {t("newProject")}
+</Button>
 
       {/* Quick start */}
       <section>
