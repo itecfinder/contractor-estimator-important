@@ -17,9 +17,10 @@ export function History() {
         </h1>
         <Button
    <Button
-  onClick={() => go("dashboard")}
+  onClick={() => createProject()}
+  className="mt-4 h-12 w-full text-base font-semibold"
 >
-  + New Project
+  Start Estimate
 </Button>
       </div>
       {projects.length === 0 ? (
