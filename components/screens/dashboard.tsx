@@ -31,10 +31,6 @@ const typeIcons: Record<ProjectTypeKey, LucideIcon> = {
   driveway: CarFront,
   roofing: Triangle,
 }
-
-
-
-
 const order: ProjectTypeKey[] = [
   "kitchenBath",
   "homeRemodel",
@@ -119,18 +115,8 @@ export function Dashboard() {
   onChange={(e) => setEmail(e.target.value)}
   className="mt-2 border-white/30 bg-transparent text-white placeholder:text-white/60"
 />
-  <Button
-  onClick={async () => {
-    if (!businessName || !phone || !email) {
-      alert("Please complete all fields")
-      return
-    }
-
-    // Later this will call:
-    // POST /api/check-access
-
-    startProject(null)
-  }}
+<Button
+  onClick={() => createProject()}
   className="mt-4 h-12 w-full text-base font-semibold"
 >
   <Plus className="size-5" />
