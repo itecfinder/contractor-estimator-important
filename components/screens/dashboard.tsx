@@ -79,7 +79,7 @@ if (result.access === "lead") {
     projectType ?? ""
   )
 
-  window.location.href = go "/settings"
+  window.location.href = go"/settings"
   return
 }
 
@@ -104,7 +104,7 @@ if (result.access === "free") {
     projectType ?? ""
   )
 
-  window.location.href = go "/settings"
+  window.location.href = go"/settings"
   return
 }
 
@@ -125,7 +125,7 @@ if (result.access === "paid") {
       projectType ?? ""
     )
 
-    window.location.href = go "/settings"
+    window.location.href = go"/settings"
     return
   }
 
