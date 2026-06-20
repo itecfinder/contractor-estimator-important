@@ -74,10 +74,10 @@ export async function POST(req: NextRequest) {
 // No user found in BD
 if (Number(data?.total || 0) === 0) {
   return NextResponse.json({
-    allowed: false,
-    message: "Create a business account",
+    allowed: true,
+    access: "lead",
   })
-}   
+}  
 const planId = String(
   user.subscription_id ||
   user.membership_plan_id ||
