@@ -55,7 +55,7 @@ return
 }
 
 try {
-const response = await fetch("/api/verify-member", {
+const response = await fetch("/api/verify-membership", {
 method: "POST",
 headers: {
 "Content-Type": "application/json",
