@@ -45,61 +45,72 @@ const order: ProjectTypeKey[] = [
 export function Dashboard() {
   const { t, lang, startProject, projects, openProject, money } = useApp()
 
-  const [businessName, setBusinessName] = useState("")
-  const [phone, setPhone] = useState("")
-  const [email, setEmail] = useState("")
-
+  const [identifier, setIdentifier] = useState("")
   const createProject = async (
-    projectType?: ProjectTypeKey
-  ) => {
-    if (!businessName || !phone || !email) {
-      alert("Please complete all fields")
-      return
-    }
-
-    try {
-      const response = await fetch(
-  "/api/verify-membership",
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-   body: JSON.stringify({
-  email,
-}),
-  }
-)
-const result = await response.json()
-
-if (!result.allowed) {
-  alert(result.message || "Create a business account")
-  return
-}
-
-// PAID = unlimited
-if (result.access === "paid") {
-  startProject(projectType ?? null)
-  return
-}
-if (result.access === "free" || result.access === "lead") {
-  const key = `${result.access}_estimate_${email}`
-
-  if (localStorage.getItem(key)) {
-    alert("Create a business account")
+  projectType?: ProjectTypeKey
+) => {
+  if (!identifier.trim()) {
+    alert("Please enter your email address or phone number")
     return
   }
 
-  localStorage.setItem(key, "true")
-  startProject(projectType ?? null)
-  return
-}
-    } catch (error) {
-      console.error(error)
-      alert("Unable to verify account")
+  try {
+    const response = await fetch("/api/profile/find", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        identifier,
+      }),
+    })
+
+    const result = await response.json()
+
+    if (!result.found) {
+      localStorage.setItem(
+        "pending_identifier",
+        identifier
+      )
+
+      window.location.href = "/business-profile"
+      return
     }
+
+    const profile = result.profile
+
+    if ((profile.estimatesUsed ?? 0) === 0) {
+      startProject(projectType ?? null)
+      return
+    }
+
+    const verifyResponse = await fetch(
+      "/api/verify-membership",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: profile.email,
+        }),
+      }
+    )
+
+    const membership =
+      await verifyResponse.json()
+
+    if (membership.access === "paid") {
+      startProject(projectType ?? null)
+      return
+    }
+
+    alert("Create a Business Account")
+  } catch (error) {
+    console.error(error)
+    alert("Unable to verify account")
   }
-  
+}
   return (
     <div className="space-y-6 px-4 pt-5">
       {/* Hero */}
@@ -109,24 +120,10 @@ if (result.access === "free" || result.access === "lead") {
           {t("tagline")}
         </h1>
 <Input
-  placeholder="Business Name"
-  value={businessName}
-  onChange={(e) => setBusinessName(e.target.value)}
+  placeholder="Email or Phone Number"
+  value={identifier}
+  onChange={(e) => setIdentifier(e.target.value)}
   className="mt-4 border-white/30 bg-transparent text-white placeholder:text-white/60"
-/>
-
-<Input
-  placeholder="Phone Number"
-  value={phone}
-  onChange={(e) => setPhone(e.target.value)}
- className="mt-2 border-white/30 bg-transparent text-white placeholder:text-white/60"
-/>
-
-<Input
-  placeholder="Email Address"
-  value={email}
-  onChange={(e) => setEmail(e.target.value)}
-  className="mt-2 border-white/30 bg-transparent text-white placeholder:text-white/60"
 />
 <Button
   onClick={() => createProject()}
