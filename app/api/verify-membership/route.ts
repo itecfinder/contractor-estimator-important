@@ -1,92 +1,124 @@
  import { NextRequest, NextResponse } from "next/server"
 
-const FREE_PLAN_IDS = ["1"]
-const PAID_PLAN_IDS = ["2", "3"]
+const FREE_PLAN_IDS = ["8"]
+const PAID_PLAN_IDS = ["4", "112"]
 
 export async function POST(req: NextRequest) {
   try {
-    const { businessName, phone, email } = await req.json()
+    const { email } = await req.json()
 
-    if (!phone && !email && !businessName) {
+    if (!email) {
       return NextResponse.json(
         {
           allowed: false,
-          message: "Phone, email, or business name required",
+          message: "Email required",
         },
         { status: 400 }
       )
     }
 
-    const searchValue = phone || email || businessName
+    console.log("VERIFY MEMBER:", email)
 
-    const bdResponse = await fetch(`${process.env.BD_API_URL}/api/v2/user/search`, {
-      method: "POST",
+    const url =
+      `${process.env.BD_API_URL}/api/v2/user/get` +
+      `?property=email` +
+      `&property_value=${encodeURIComponent(email)}`
+
+    console.log("BD URL:", url)
+
+    const response = await fetch(url, {
+      method: "GET",
       headers: {
         "X-Api-Key": process.env.BD_API_KEY!,
-        "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        q: searchValue,
-      }),
+      cache: "no-store",
     })
 
-    const text = await bdResponse.text()
+    const raw = await response.text()
 
-    if (!bdResponse.ok) {
-      throw new Error(`BD Error ${bdResponse.status}: ${text}`)
+    console.log("BD STATUS:", response.status)
+    console.log("BD RAW RESPONSE:", raw)
+
+    if (!response.ok) {
+      throw new Error(
+        `BD API Error ${response.status}: ${raw}`
+      )
     }
 
-    const bdData = JSON.parse(text)
+    let data: any = null
 
-    const bdUser = Array.isArray(bdData?.message)
-      ? bdData.message[0]
-      : bdData?.message?.[0] || bdData?.message || bdData?.user || bdData || null
+    try {
+      data = raw ? JSON.parse(raw) : null
+    } catch (e) {
+      console.error("JSON PARSE ERROR:", e)
+      throw new Error("Invalid BD response")
+    }
 
-    if (bdUser?.user_id || bdUser?.id) {
-      const subscriptionId = String(bdUser.subscription_id || bdUser.subscriptionId || "")
+    console.log(
+      "BD PARSED RESPONSE:",
+      JSON.stringify(data, null, 2)
+    )
 
-      const access = PAID_PLAN_IDS.includes(subscriptionId)
-        ? "paid"
-        : FREE_PLAN_IDS.includes(subscriptionId)
-          ? "free"
-          : "lead"
+    const user =
+      data?.user ||
+      data?.data?.[0] ||
+      data?.result?.[0] ||
+      data?.data ||
+      data?.result ||
+      data
 
-      const isPaid = access === "paid"
+    console.log(
+      "BD USER:",
+      JSON.stringify(user, null, 2)
+    )
 
+    // No member found = lead
+    if (!user || (!user.id && !user.user_id)) {
       return NextResponse.json({
         allowed: true,
-        canContinue: true,
-        access,
-        remainingPasses: isPaid ? null : 1,
-        upgradeMessage: isPaid
-          ? null
-          : "Your free access has already been used. Please upgrade to continue.",
-        memberId: bdUser.user_id || bdUser.id,
-        name: `${bdUser.first_name || ""} ${bdUser.last_name || ""}`.trim(),
-        email: bdUser.email || "",
-        phone: bdUser.phone_number || "",
-        subscriptionId: subscriptionId || null,
+        access: "lead",
+      })
+    }
+const planId = String(
+  user.subscription_id ||
+  user.membership_plan_id ||
+  user.plan_id ||
+  ""
+)
+    console.log("PLAN ID:", planId)
+
+    if (PAID_PLAN_IDS.includes(planId)) {
+      return NextResponse.json({
+        allowed: true,
+        access: "paid",
+        planId,
       })
     }
 
+    if (FREE_PLAN_IDS.includes(planId)) {
+      return NextResponse.json({
+        allowed: true,
+        access: "free",
+        planId,
+      })
+    }
+
+    console.log("UNKNOWN PLAN:", planId)
+
     return NextResponse.json({
       allowed: true,
-      canContinue: true,
       access: "lead",
-      remainingPasses: 1,
-      upgradeMessage: "Your free estimate pass is available.",
+      planId,
     })
   } catch (error) {
-    console.error(error)
+    console.error("VERIFY ERROR:", error)
 
     return NextResponse.json(
       {
         allowed: false,
-        canContinue: false,
         message: "Unable to verify account",
       },
       { status: 500 }
     )
   }
 }
-
