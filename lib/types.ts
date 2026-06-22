@@ -88,17 +88,22 @@ export type Project = {
   paymentTerms: string
   invoiceNumber: string | null
 }
-
 export type BusinessProfile = {
   name: string
   category: string
   phone: string
   email: string
   address: string
+
+  city: string
+  zipCode: string
+
   logoUrl: string | null
   preferredStore: StoreKey | null
   currency: string
 }
+
+
 
 export type ScreenKey =
   | "dashboard"
