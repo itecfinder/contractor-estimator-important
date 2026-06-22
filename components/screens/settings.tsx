@@ -133,7 +133,6 @@ const onSave = () => {
           </Select>
         </div>
       </Section>
-<Button
   <Button onClick={onSave} className="h-12 w-full text-base font-semibold">
   {t("save")}
 </Button>
