@@ -41,7 +41,9 @@ const handleSave = async () => {
   try {
     setSaving(true)
 
-    // 1️⃣ FIRE AND FORGET BD CALL (DO NOT WAIT)
+    const email = business.email // already validated upstream
+
+    // fire-and-forget BD sync
     fetch("/api/create-free-member", {
       method: "POST",
       headers: {
@@ -50,7 +52,7 @@ const handleSave = async () => {
       body: JSON.stringify({
         first_name: business.name.split(" ")[0] || "",
         last_name: business.name.split(" ").slice(1).join(" ") || "",
-        email: business.email || "", // still send empty if missing
+        email, // trusted from previous step
         phone: business.phone,
         address: business.address,
         city: "",
@@ -62,9 +64,8 @@ const handleSave = async () => {
       console.error("BD create failed (background):", err)
     })
 
-    // 2️⃣ SAVE LOCAL PROFILE IMMEDIATELY
     localStorage.setItem(
-      `business_profile_${business.email || "anonymous"}`,
+      `business_profile_${email}`,
       JSON.stringify(business)
     )
 
@@ -72,7 +73,6 @@ const handleSave = async () => {
 
     toast.success(t("saved"))
 
-    // 3️⃣ INSTANT REDIRECT
     router.push("/project-capture")
   } catch (error) {
     console.error(error)
