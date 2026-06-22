@@ -37,53 +37,57 @@ export function Settings() {
       })
     }
   }
+const handleSave = async () => {
+  try {
+    setSaving(true)
 
-  const handleSave = async () => {
-    try {
-      setSaving(true)
-
-      if (!business.email) {
-        toast.error("Email required")
-        return
-      }
-
-      const response = await fetch("/api/create-free-member", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          first_name: business.name.split(" ")[0] || "",
-          last_name: business.name.split(" ").slice(1).join(" ") || "",
-          email: business.email,
-          phone: business.phone,
-          address: business.address,
-          city: "",
-          state_code: "",
-          zip_code: "",
-          country_code: "US",
-        }),
-      })
-
-      const data = await response.json()
-
-      console.log("FREE MEMBER RESULT:", data)
-
-      if (!data.success) {
-        toast.error(data.message || "Unable to create account")
-        return
-      }
-
-      toast.success(t("saved"))
-
-      router.push("/customer-info")
-    } catch (error) {
-      console.error(error)
-      toast.error("Something went wrong")
-    } finally {
+    if (!business.email) {
+      toast.error("Email required")
       setSaving(false)
+      return
     }
+
+    // 1️⃣ FIRE AND FORGET BD CALL (DO NOT WAIT)
+    fetch("/api/create-free-member", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        first_name: business.name.split(" ")[0] || "",
+        last_name: business.name.split(" ").slice(1).join(" ") || "",
+        email: business.email,
+        phone: business.phone,
+        address: business.address,
+        city: "",
+        state_code: "",
+        zip_code: "",
+        country_code: "US",
+      }),
+    }).catch((err) => {
+      console.error("BD create failed (background):", err)
+    })
+
+    // 2️⃣ SAVE LOCAL PROFILE IMMEDIATELY
+    localStorage.setItem(
+      `business_profile_${business.email}`,
+      JSON.stringify(business)
+    )
+
+    localStorage.removeItem("pending_email")
+
+    toast.success(t("saved"))
+
+    // 3️⃣ INSTANT REDIRECT (NO WAIT)
+    router.push("/customer-info")
+
+  } catch (error) {
+    console.error(error)
+    toast.error("Something went wrong")
+  } finally {
+    setSaving(false)
   }
+}
   return (
     <div className="space-y-6 px-4 pt-5">
       <h1 className="text-2xl font-bold tracking-tight font-[family-name:var(--font-heading)]">
