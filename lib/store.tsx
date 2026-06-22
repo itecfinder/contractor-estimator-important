@@ -103,6 +103,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [current, setCurrent] = useState<Project | null>(null)
   const [business, setBusiness] = useState<BusinessProfile>({
     name: "",
+    category: "",
     phone: "",
     email: "",
     address: "",
