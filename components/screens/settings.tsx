@@ -1,7 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRef } from "react"
 import { Upload } from "lucide-react"
 import { toast } from "sonner"
 import { storeLabels } from "@/lib/i18n"
@@ -20,67 +19,16 @@ import {
 import { cn } from "@/lib/utils"
 
 const storeOrder: StoreKey[] = ["homeDepot", "lowes", "menards", "abcSupply", "lumber84"]
+
 export function Settings() {
   const { t, lang, setLang, business, setBusiness } = useApp()
-  const router = useRouter()
-  const [saving, setSaving] = useState(false)
-
   const fileRef = useRef<HTMLInputElement>(null)
 
   const onLogo = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
-
-    if (file) {
-      setBusiness({
-        ...business,
-        logoUrl: URL.createObjectURL(file),
-      })
-    }
+    if (file) setBusiness({ ...business, logoUrl: URL.createObjectURL(file) })
   }
-const handleSave = async () => {
-  try {
-    setSaving(true)
 
-    const email = business.email // already validated upstream
-
-    // fire-and-forget BD sync
-    fetch("/api/create-free-member", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        first_name: business.name.split(" ")[0] || "",
-        last_name: business.name.split(" ").slice(1).join(" ") || "",
-        email, // trusted from previous step
-        phone: business.phone,
-        address: business.address,
-        city: "",
-        state_code: "",
-        zip_code: "",
-        country_code: "US",
-      }),
-    }).catch((err) => {
-      console.error("BD create failed (background):", err)
-    })
-
-    localStorage.setItem(
-      `business_profile_${email}`,
-      JSON.stringify(business)
-    )
-
-    localStorage.removeItem("pending_email")
-
-    toast.success(t("saved"))
-
-    router.push("/project-capture")
-  } catch (error) {
-    console.error(error)
-    toast.error("Something went wrong")
-  } finally {
-    setSaving(false)
-  }
-}
   return (
     <div className="space-y-6 px-4 pt-5">
       <h1 className="text-2xl font-bold tracking-tight font-[family-name:var(--font-heading)]">
@@ -164,13 +112,10 @@ const handleSave = async () => {
           </Select>
         </div>
       </Section>
-<Button
-  onClick={() => go("/project-capture")}
-  className="h-12 w-full text-base font-semibold"
->
-  Continue
-  <ArrowRight className="size-5" />
-</Button>
+
+      <Button onClick={() => toast.success(t("saved"))} className="h-12 w-full text-base font-semibold">
+        {t("save")}
+      </Button>
     </div>
   )
 }
@@ -200,3 +145,5 @@ function LabeledInput({
     </div>
   )
 }
+
+
