@@ -27,7 +27,7 @@ const storeOrder: StoreKey[] = ["homeDepot", "lowes", "menards", "abcSupply", "l
 
 export function Settings() {
   const router = useRouter()
-  const { t, lang, setLang, business, setBusiness } = useApp()
+  const { t, lang, setLang, business, setBusiness,go } = useApp()
   const fileRef = useRef<HTMLInputElement>(null)
 
   const onLogo = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,7 +127,7 @@ export function Settings() {
       </Section>
 
       <Button
-  onClick={() => router.push("/project-capture")}
+  onClick={() => go("/project-capture")}
   className="h-12 w-full text-base font-semibold"
 >
   {t("save")}
