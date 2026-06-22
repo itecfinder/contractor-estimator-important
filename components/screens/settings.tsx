@@ -1,15 +1,19 @@
 "use client"
+"use client"
 
 import { useRef } from "react"
+import { useRouter } from "next/navigation"
 import { Upload } from "lucide-react"
 import { toast } from "sonner"
-import { useRouter } from "next/navigation"
+
 import { storeLabels } from "@/lib/i18n"
 import { useApp } from "@/lib/store"
 import type { Lang, StoreKey } from "@/lib/types"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+
 import {
   Select,
   SelectContent,
@@ -17,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+
 import { cn } from "@/lib/utils"
 
 const storeOrder: StoreKey[] = ["homeDepot", "lowes", "menards", "abcSupply", "lumber84"]
@@ -25,7 +30,6 @@ export function Settings() {
   const router = useRouter()
   const { t, lang, setLang, business, setBusiness } = useApp()
   const fileRef = useRef<HTMLInputElement>(null)
-
 
   const onLogo = (e: React.ChangeEvent<HTMLInputElement>) => {
   const file = e.target.files?.[0]
