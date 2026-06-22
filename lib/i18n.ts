@@ -97,6 +97,7 @@ export const dict = {
   language: { en: "Language", es: "Idioma" },
   businessProfile: { en: "Business Profile", es: "Perfil del Negocio" },
   businessName: { en: "Business Name", es: "Nombre del Negocio" },
+  category: { en: "Category", es: "Categoría" }
   defaults: { en: "Estimate Defaults", es: "Valores por Defecto" },
   currency: { en: "Currency", es: "Moneda" },
   save: { en: "Save", es: "Guardar" },
