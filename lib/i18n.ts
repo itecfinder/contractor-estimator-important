@@ -98,6 +98,8 @@ export const dict = {
   language: { en: "Language", es: "Idioma" },
   businessProfile: { en: "Business Profile", es: "Perfil del Negocio" },
   businessName: { en: "Business Name", es: "Nombre del Negocio" },
+  city: { en: "City", es: "Ciudad" },
+zipCode: { en: "ZIP Code", es: "Código Postal" },
   businessType: { en: "Business Type", es: "Tipo de Negocio" },
   defaults: { en: "Estimate Defaults", es: "Valores por Defecto" },
   currency: { en: "Currency", es: "Moneda" },
