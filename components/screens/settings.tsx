@@ -134,7 +134,7 @@ const onSave = () => {
         </div>
       </Section>
 <Button
-  onClick={() => go("project-Capture")}
+  onClick={() => go("project-capture")}
   className="h-12 w-full text-base font-semibold"
 >
   {t("save")}
