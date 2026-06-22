@@ -167,8 +167,8 @@ export function Settings() {
           </Select>
         </div>
       </Section>
-<Button
-  onClick={handleSave} disabled={saving} className="h-12 w-full text-base font-semibol>
+<Button onClick={handleSave} disabled={saving}
+  className="h-12 w-full text-base font-semibold">
   {saving ? "Saving..." : t("save")}
 </Button>
     </div>
