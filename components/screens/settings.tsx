@@ -164,9 +164,12 @@ const handleSave = async () => {
           </Select>
         </div>
       </Section>
-<Button onClick={handleSave} disabled={saving}
-  className="h-12 w-full text-base font-semibold">
-  {saving ? "Saving..." : t("save")}
+<Button
+  onClick={() => go("/project-capture")}
+  className="h-12 w-full text-base font-semibold"
+>
+  Continue
+  <ArrowRight className="size-5" />
 </Button>
     </div>
   )
