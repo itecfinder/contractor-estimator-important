@@ -13,8 +13,8 @@ export function History() {
         <h1 className="text-2xl font-bold tracking-tight font-[family-name:var(--font-heading)]">
           {t("history")}
         </h1>
-   <Button
-  onClick={() => createProject()}
+  <Button
+  onClick={() => startProject()}
   className="mt-4 h-12 w-full text-base font-semibold"
 >
   Start Estimate
