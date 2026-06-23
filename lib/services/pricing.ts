@@ -1,5 +1,5 @@
 import type { EstimateSettings, LineItem } from "@/lib/types"
-import { computeTotals, type Totals } from "@/services/pricing"
+
 export const defaultEstimate: EstimateSettings = {
   laborRate: 60,
   wastePct: 10,
@@ -35,7 +35,8 @@ export function computeTotals(
   }
 
   const subtotal = materials + labor
-  const withProfit = subtotal * (1 + s.profitPct / 100) - s.discount
+  const withProfit =
+    subtotal * (1 + s.profitPct / 100) - s.discount
   const tax = withProfit * (s.taxPct / 100)
   const total = withProfit + tax
 
