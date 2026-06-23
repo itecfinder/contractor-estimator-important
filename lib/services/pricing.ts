@@ -1,5 +1,5 @@
 import type { EstimateSettings, LineItem } from "@/lib/types"
-
+import { computeTotals, type Totals } from "@/services/pricing"
 export const defaultEstimate: EstimateSettings = {
   laborRate: 60,
   wastePct: 10,
