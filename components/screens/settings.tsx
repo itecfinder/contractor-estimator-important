@@ -1,146 +1,80 @@
 "use client"
 
-import { useRef, type ChangeEvent } from "react"
+import { useRef } from "react"
 import { Upload } from "lucide-react"
-import { toast } from "sonner"
-
 import { useApp } from "@/lib/store"
-import { useBusinessSettings } from "@/lib/hooks/useBusinessSettings"
-
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { useEnterpriseSettings } from "@/lib/hooks/useEnterpriseSettings"
 
 export function Settings() {
-  const { t, lang, setLang, business: initial } = useApp()
+  const { t, lang, setLang, business } = useApp()
 
-  const {
-    business,
-    setBusiness,
-    status,
-    dirty,
-  } = useBusinessSettings(initial)
+  const { state, setField, status, dirtyKeys } =
+    useEnterpriseSettings(business)
 
   const fileRef = useRef<HTMLInputElement>(null)
 
-  const onLogo = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setBusiness({ logoUrl: URL.createObjectURL(file) })
-  }
-
   return (
     <div className="space-y-6 px-4 pt-5">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">{t("settings")}</h1>
+      <Header status={status} dirty={dirtyKeys.size} />
 
-        {/* SAVE STATUS */}
-        <span className="text-xs text-muted-foreground">
-          {status === "saving" && "Saving..."}
-          {status === "saved" && "Saved"}
-          {status === "error" && "Error"}
-          {!dirty && status === "idle" && "Up to date"}
-        </span>
-      </div>
-
-      {/* BUSINESS NAME */}
       <Section title={t("businessProfile")}>
-        <LabeledInput
-          label={t("businessName")}
-          value={business.name}
-          onChange={(v) => setBusiness({ name: v })}
+        <input
+          value={state.name}
+          onChange={(e) => setField("name", e.target.value)}
+          className="input"
         />
 
-        <LabeledInput
-          label={t("email")}
-          value={business.email}
-          onChange={(v) => setBusiness({ email: v })}
+        <input
+          value={state.email}
+          onChange={(e) => setField("email", e.target.value)}
+          className="input"
         />
 
-        <div className="flex gap-3">
+        <button onClick={() => fileRef.current?.click()}>
+          <Upload />
+          Upload logo
+        </button>
+
+        <input
+          ref={fileRef}
+          type="file"
+          hidden
+          onChange={(e) => {
+            const file = e.target.files?.[0]
+            if (!file) return
+            setField("logoUrl", URL.createObjectURL(file))
+          }}
+        />
+      </Section>
+
+      <Section title="Language">
+        {["en", "es"].map((l) => (
           <button
-            onClick={() => fileRef.current?.click()}
-            className="flex size-14 items-center justify-center rounded border"
+            key={l}
+            onClick={() => setLang(l as any)}
+            className={lang === l ? "active" : ""}
           >
-            {business.logoUrl ? (
-              <img src={business.logoUrl} className="size-full object-contain" />
-            ) : (
-              <Upload className="size-4" />
-            )}
+            {l}
           </button>
-
-          <input
-            ref={fileRef}
-            type="file"
-            hidden
-            accept="image/*"
-            onChange={onLogo}
-          />
-
-          <Button onClick={() => fileRef.current?.click()}>
-            {t("uploadLogo")}
-          </Button>
-        </div>
+        ))}
       </Section>
-
-      {/* LANGUAGE */}
-      <Section title={t("language")}>
-        <div className="flex gap-2">
-          {["en", "es"].map((l) => (
-            <button
-              key={l}
-              onClick={() => setLang(l as any)}
-              className={`flex-1 border rounded p-2 ${
-                lang === l ? "bg-black text-white" : ""
-              }`}
-            >
-              {l}
-            </button>
-          ))}
-        </div>
-      </Section>
-
-      {/* MANUAL SAVE (fallback) */}
-      <Button
-        onClick={() => toast.success(t("saved"))}
-        className="w-full h-12"
-      >
-        {t("save")}
-      </Button>
     </div>
   )
 }
 
-function Section({
-  title,
-  children,
+function Header({
+  status,
+  dirty,
 }: {
-  title: string
-  children: React.ReactNode
+  status: string
+  dirty: number
 }) {
   return (
-    <section className="space-y-3">
-      <h2 className="text-sm font-semibold uppercase text-muted-foreground">
-        {title}
-      </h2>
-      {children}
-    </section>
-  )
-}
-
-function LabeledInput({
-  label,
-  value,
-  onChange,
-}: {
-  label: string
-  value: string
-  onChange: (v: string) => void
-}) {
-  return (
-    <div className="space-y-1.5">
-      <Label>{label}</Label>
-      <Input value={value} onChange={(e) => onChange(e.target.value)} />
+    <div className="flex justify-between">
+      <h1 className="text-xl font-bold">Settings</h1>
+      <span className="text-xs text-muted-foreground">
+        {dirty > 0 ? "Unsaved changes" : status}
+      </span>
     </div>
   )
 }
