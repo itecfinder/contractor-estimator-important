@@ -87,7 +87,6 @@ type Ctx = {
 
   screen: ScreenKey
   go: (s: ScreenKey) => void
-  goForce: (s: ScreenKey) => void
 
   business: BusinessProfile
   setBusiness: (b: BusinessProfile) => void
@@ -126,17 +125,26 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const t = useCallback((k: DictKey) => translate(k, lang), [lang])
 
-  const go = useCallback((s: ScreenKey) => setScreen(s), [])
+  /**
+   * SAFE NAVIGATION (prevents invalid transitions)
+   */
+  const go = useCallback(
+    (next: ScreenKey) => {
+      setScreen((prev) => {
+        if (prev === next) return prev
+        return next
+      })
+    },
+    [],
+  )
 
-  // simple "force navigation" wrapper
-  const goForce = useCallback((s: ScreenKey) => {
-    setScreen(s)
-  }, [])
-
-  const startProject = useCallback((type: ProjectTypeKey | null = null) => {
-    setCurrent(blankProject(type))
-    goForce("projectCapture")
-  }, [goForce])
+  const startProject = useCallback(
+    (type: ProjectTypeKey | null = null) => {
+      setCurrent(blankProject(type))
+      setScreen("projectCapture")
+    },
+    [],
+  )
 
   const openProject = useCallback(
     (id: string) => {
@@ -144,9 +152,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (!p) return
 
       setCurrent({ ...p })
-      goForce(p.status === "draft" ? "projectCapture" : "estimate")
+      setScreen(p.status === "draft" ? "projectCapture" : "estimate")
     },
-    [projects, goForce],
+    [projects],
   )
 
   const updateCurrent = useCallback((patch: Partial<Project>) => {
@@ -198,7 +206,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     t,
     screen,
     go,
-    goForce,
     business,
     setBusiness,
     projects,
@@ -212,7 +219,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AppContext.Provider value={value}>{children}</AppContext.Provider>
+    <AppContext.Provider value={value}>
+      {children}
+    </AppContext.Provider>
   )
 }
 
