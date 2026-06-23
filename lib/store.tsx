@@ -9,18 +9,22 @@ import {
   type ReactNode,
 } from "react"
 
+import {
+  computeTotals,
+  defaultEstimate,
+  type Totals,
+} from "@/services/pricing"
+
 import { translate, type DictKey } from "./i18n"
 import { uid } from "./mock"
+
 import type {
   BusinessProfile,
-  EstimateSettings,
   Lang,
-  LineItem,
   Project,
   ProjectTypeKey,
   ScreenKey,
 } from "./types"
-
 function blankProject(type: ProjectTypeKey | null = null): Project {
   return {
     id: uid(),
