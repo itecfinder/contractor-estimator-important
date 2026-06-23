@@ -1,13 +1,22 @@
-import { uid } from "./mock"
-import type { Project, ProjectTypeKey } from "./types"
+import { uid } from "@/lib/mock"
+import type { Project, ProjectTypeKey } from "@/lib/types"
 import { defaultEstimate } from "@/services/pricing"
-function blankProject(type: ProjectTypeKey | null = null): Project {
+
+export function blankProject(
+  type: ProjectTypeKey | null = null,
+): Project {
   return {
     id: uid(),
     createdAt: Date.now(),
     status: "draft",
     type,
-    customer: { name: "", phone: "", email: "", address: "", zip: "" },
+    customer: {
+      name: "",
+      phone: "",
+      email: "",
+      address: "",
+      zip: "",
+    },
     notes: "",
     images: [],
     analysis: null,
