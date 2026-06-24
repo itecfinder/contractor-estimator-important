@@ -11,9 +11,6 @@ export async function POST(req: Request) {
       )
     }
 
-    // TEMP AUTH
-    // Later this will call the BD API
-
     const response = NextResponse.json({
       success: true,
       user: { email },
